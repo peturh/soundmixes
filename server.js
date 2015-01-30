@@ -6,9 +6,8 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var multiparty = require('connect-multiparty');
 var multipartyMiddleware = multiparty();
-var UserController = require('controller/UserController');
 var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json()
+var jsonParser = bodyParser.json();
 
 
 mongoose.connect("mongodb://localhost:27017/cedricMusic");
