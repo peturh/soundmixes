@@ -1,9 +1,8 @@
-<div>
-    <ul ng-repeat="post in posts">
-        <li>
-            <label>post.title</label>
-            <label>post.description</label>
-            <label>post.length</label>
+<div ng-init="run()">
+    <ul>
+        <li ng-repeat="post in posts">
+            <label>{{post.title}}</label>
+            <label>{{post.description}}</label>
         </li>
     </ul>
 </div>

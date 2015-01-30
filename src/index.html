@@ -6,7 +6,7 @@
 
     <div class="navbar">
         <a href="#newpost" ng-hide="isActive('/newpost')">New post</a>
-        <a href="/" ng-hide="isActive('') || isActive('/')">Read posts</a>
+        <a ng-click="run()" href="/" ng-hide="isActive('') || isActive('/')">Read posts</a>
     </div>
 
     <div class="container">

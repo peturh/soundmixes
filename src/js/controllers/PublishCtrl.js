@@ -1,8 +1,20 @@
 app.controller('PublishCtrl',['$scope','QueryService', function($scope, QueryService){
 
+
+    $scope.newPost = {
+        "title" : "",
+        "description" : "",
+        "date" :"",
+        "password" : ""
+    };
+
     $scope.publishPost = function(){
-        console.log("Denna körs");
-        QueryService.putPost("hej lisa");
+        console.log($scope.newPost);
+        QueryService.putPost($scope.newPost).then(function(){
+            QueryService.getPosts().then(function(data){
+                $scope.posts = data.data;
+            });
+        });
     };
 
 }]);

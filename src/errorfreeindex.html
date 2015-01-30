@@ -6,8 +6,7 @@
 
     <div class="navbar">
         <a href="#newpost" ng-hide="isActive('/newpost')">New post</a>
-        <a href="/" ng-hide="isActive('') || isActive('/')">Read posts</a>
-
+        <a ng-click="run()" href="/" ng-hide="isActive('') || isActive('/')">Read posts</a>
     </div>
 
     <div class="container">
@@ -15,16 +14,12 @@
     </div>
     <div ng-view></div>
 
-
-
     </body>
 
     <!--Vendors -->
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
-
     <!-- My app -->
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/controllers/MainCtrl.js"></script>

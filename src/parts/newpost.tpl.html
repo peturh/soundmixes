@@ -1,13 +1,15 @@
 <form>
     <span class="form">Add new track</span>
     <div>
-        <input class="form input" placeholder="Track title...">
+        <input ng-model="newPost.title" class="form input" placeholder="Track title...">
     </div>
     <div>
-        <textarea class="form textarea" placeholder="Description..."></textarea>
+        <textarea ng-model="newPost.description" class="form textarea" placeholder="Description..."></textarea>
     </div>
     <div ng-click="publishPost">
-        <input type="password" class="form input" placeholder="Password...">
+        <input type="password" ng-model="newPost.password" class="form input" placeholder="Password...">
     </div>
     <button ng-click="publishPost()" class="form button">Submit</button>
 </form>
+
+{{newPost}}

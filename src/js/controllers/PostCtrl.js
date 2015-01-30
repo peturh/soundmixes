@@ -1,5 +1,3 @@
-app.controller('PostCtrl',['$scope', function($scope){
-
-
+app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService){
 
 }]);
