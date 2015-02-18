@@ -1,4 +1,4 @@
-var app = angular.module('soundMixes', ['ngRoute'])
+var app = angular.module('soundMixes', ['ngRoute','angularFileUpload','wavesurfer.angular'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {

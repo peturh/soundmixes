@@ -30,8 +30,11 @@ module.exports = function(grunt) {
       files: [
           'Gruntfile.js',
           'src/**/*.js',
-          '!src/js/vendors/ladda.js',
-          '!src/js/vendors/spin.js'
+          '!src/js/directives/angular-upload.js',
+          '!src/js/vendors/moment.js',
+          '!src/js/directives/angular-media-player.min.js',
+          '!src/js/directives/wavesurfer-angular.js',
+          '!src/js/vendors/wavesurfer.min.js'
       ],
       options: {
         // options here to override JSHint defaults

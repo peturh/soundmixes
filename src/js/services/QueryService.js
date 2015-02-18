@@ -1,16 +1,7 @@
-app.service('QueryService',['$http', function($http){
+app.service('QueryService',['$http','$upload', function($http,$upload){
 
     var QueryService = {};
 
-    QueryService.putPost = function(thePost){
-        return $http.post("/post",thePost).
-            success(function(data, status, headers, config) {
-                console.log("success");
-            }).
-            error(function(data, status, headers, config) {
-                console.log("error");
-            });
-    };
 
     QueryService.getPosts =function() {
         return $http.get("/posts")
@@ -21,6 +12,20 @@ app.service('QueryService',['$http', function($http){
         ).error(function(data,status,headers,config){
                 console.log("Error",data);
             });
+    };
+
+    QueryService.uploadFile = function(file,post){
+        console.log(post);
+        return $upload.upload({
+            url: 'uploadfile',
+            data: {myObj: post},
+            file: file
+        }).progress(function(evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' + progressPercentage + '% ' + evt.config.file);
+        }).success(function(data, status, headers, config) {
+            console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+        });
     };
 
     return QueryService;

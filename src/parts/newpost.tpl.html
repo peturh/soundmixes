@@ -9,7 +9,17 @@
     <div ng-click="publishPost">
         <input type="password" ng-model="newPost.password" class="form input" placeholder="Password...">
     </div>
+    <div>
+    <button class="form button" type="file"
+    ng-file-select ng-model="file"
+    ng-file-change="fileSelected($files, $event)"
+    ng-multiple="false"
+    ng-capture="'other'"
+    accept=".mp3,.mp4,.wav,.flac">Choose mix</button>
+    </div>
+    <div class="form" ng-show="file">
+        <div class="file-info"><b>Name:</b> {{file[0].name}}</div>
+        <div class="file-info"><b>Size:</b> {{file[0].size/1000000}} MB</div>
+    </div>
     <button ng-click="publishPost()" class="form button">Submit</button>
 </form>
-
-{{newPost}}

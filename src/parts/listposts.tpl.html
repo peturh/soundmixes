@@ -1,8 +1,18 @@
 <div ng-init="run()">
     <ul>
-        <li ng-repeat="post in posts">
-            <label>{{post.title}}</label>
-            <label>{{post.description}}</label>
+        <li class="sound-list" ng-repeat="post in posts | orderBy: reverse">
+            <span class="title">{{post.title}}</span> <span class="date">- {{getDate(post.date)}}</span>
+            <span class="description">{{post.description}}</span>
+
+           <!--<audio controls>
+                <source
+                        src="{{post.fileName}}"
+                        type="audio/mp3">
+            </audio>
+
+
+            <div class="download"><a href="{{post.fileName}}" target="_blank"><img src="img/download.png"></a></div>
+            --> 
         </li>
     </ul>
 </div>

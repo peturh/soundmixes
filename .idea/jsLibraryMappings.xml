@@ -2,6 +2,6 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{cedric-music node_modules}" />
-    <file url="PROJECT" libraries="{angular-resource, angular-route, jquery-2.1.3}" />
+    <file url="PROJECT" libraries="{angular-resource, angular-route, angular-sanitize, jquery-2.1.3, moment, underscore, vg-controls, videogular}" />
   </component>
 </project>
