@@ -1,18 +1,66 @@
 <div ng-init="run()">
-    <ul>
-        <li class="sound-list" ng-repeat="post in posts | orderBy: reverse">
-            <span class="title">{{post.title}}</span> <span class="date">- {{getDate(post.date)}}</span>
-            <span class="description">{{post.description}}</span>
-
-           <!--<audio controls>
-                <source
-                        src="{{post.fileName}}"
-                        type="audio/mp3">
-            </audio>
+    <div infinite-scroll="loadMore()" infinite-scroll-distance="5000000">
+        <ul>
+            <li class="sound-list" ng-repeat="post in posts | reverse | limitTo: limit track by post._id">
+                <span class="title">{{post.title}}</span> <span class="date">- {{getDate(post.date)}}</span>
+                <span class="description">{{post.description}}</span>
 
 
-            <div class="download"><a href="{{post.fileName}}" target="_blank"><img src="img/download.png"></a></div>
-            --> 
-        </li>
-    </ul>
+                <div ng-controller="WaveSurferController">
+                    <div cg-busy="started"></div>
+                    <div wave-surfer src="{{post.fileName}}"></div>
+                    {{post}}
+                    <div class="media-buttons">
+                        <button class="media-button" ng-click="playSong()" ng-hide="playing || !started">
+                            <a><i class="fa fa-play"></i></a>
+                        </button>
+
+                        <button class="media-button" ng-click="pauseSong()" ng-hide="!playing || !started">
+                             <a><i class="fa fa-pause"></i> </a>
+                        </button>
+
+                        <button class="media-button" ng-click="stopSong()" ng-show="started">
+                            <a> <i class="fa fa-stop"></i> </a>
+                        </button>
+
+                        <button class="media-button" ng-click="volumeDown()" ng-show="started">
+                            <a><i class="fa fa-volume-down"></i></a>
+                        </button>
+
+                        <span>{{getVolume()}}%</span>
+
+
+                         <button class="media-button" ng-click="volumeUp()" ng-show="started">
+                            <a><i class="fa fa-volume-up"></i></a>
+                        </button>
+
+                         <button class="media-button" ng-click="volumeOff()" ng-show="started">
+                            <a><i class="fa fa-volume-off"></i></a>
+                        </button>
+
+
+                            <button class="media-button">
+                                <a href="{{post.fileName}}" target="_blank">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                            </button>
+
+
+                        <button class="media-button remove" ng-click="deletePost()">
+                            <i class="fa fa-remove"></i>
+                        </button>
+
+                    </div>
+                </div>
+
+               <!--<audio controls>
+                    <source
+                            src="{{post.fileName}}"
+                            type="audio/mp3">
+                </audio>
+                -->
+
+            </li>
+        </ul>
+    </div>
 </div>

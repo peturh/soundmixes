@@ -1,0 +1,55 @@
+<div ng-init="run()">
+    <ul>
+        <li class="sound-list" ng-repeat="post in posts | orderBy: post.date">
+            <span class="title">{{post.title}}</span> <span class="date">- {{getDate(post.date)}}</span>
+            <span class="description">{{post.description}}</span>
+
+            <div ng-controller="WaveSurferController">
+                <div cg-busy="started"></div>
+                <div wave-surfer src="{{post.fileName}}"></div>
+                <div class="media-buttons">
+                    <button class="media-button" ng-click="playSong()" ng-hide="playing || !started">
+                        <a><i class="fa fa-play"></i></a>
+                    </button>
+
+                    <button class="media-button" ng-click="pauseSong()" ng-hide="!playing || !started">
+                         <a><i class="fa fa-pause"></i> </a>
+                    </button>
+
+                    <button class="media-button" ng-click="stopSong()" ng-show="started">
+                        <a> <i class="fa fa-stop"></i> </a>
+                    </button>
+
+                    <button class="media-button" ng-click="volumeDown()" ng-show="started">
+                        <a><i class="fa fa-volume-down"></i></a>
+                    </button>
+
+                    <span>{{getVolume()}}%</span>
+
+
+                     <button class="media-button" ng-click="volumeUp()" ng-show="started">
+                        <a><i class="fa fa-volume-up"></i></a>
+                    </button>
+
+                     <button class="media-button" ng-click="volumeOff()" ng-show="started">
+                        <a><i class="fa fa-volume-off"></i></a>
+                    </button>
+
+                    <a href="{{post.fileName}}" target="_blank">
+                        <button class="media-button" ng-click="pauseSong()">
+                            <i class="fa fa-download"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+           <!--<audio controls>
+                <source
+                        src="{{post.fileName}}"
+                        type="audio/mp3">
+            </audio>
+            -->
+
+        </li>
+    </ul>
+</div>

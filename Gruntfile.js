@@ -34,7 +34,9 @@ module.exports = function(grunt) {
           '!src/js/vendors/moment.js',
           '!src/js/directives/angular-media-player.min.js',
           '!src/js/directives/wavesurfer-angular.js',
-          '!src/js/vendors/wavesurfer.min.js'
+          '!src/js/vendors/wavesurfer.min.js',
+          '!src/js/vendors/cg-busy.js',
+          '!src/js/vendors/infinite-scroll.js'
       ],
       options: {
         // options here to override JSHint defaults
@@ -53,11 +55,8 @@ module.exports = function(grunt) {
     targethtml: {
       dist: {
           files: {
-              'dist/templates/cityselector.tpl.html' : 'src/templates/cityselector.tpl.html',
-              'dist/templates/info-modal.tpl.html' : 'src/templates/info-modal.tpl.html',
-              'dist/templates/infobuttons.tpl.html' : 'src/templates/infobuttons.tpl.html',
-              'dist/templates/modal.tpl.html' : 'src/templates/modal.tpl.html',
-              'dist/templates/sepandnum.tpl.html' : 'src/templates/sepandnum.tpl.html',
+              'dist/parts/listposts.tpl.html' : 'src/parts/listposts.tpl.html',
+              'dist/parts/newpost.tpl.html' : 'src/parts/newpost.tpl.html',
               'dist/index.html': 'src/index.html'
           }
       },

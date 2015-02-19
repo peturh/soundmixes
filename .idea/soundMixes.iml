@@ -13,5 +13,6 @@
     <orderEntry type="library" name="videogular" level="application" />
     <orderEntry type="library" name="vg-controls" level="application" />
     <orderEntry type="library" name="underscore" level="application" />
+    <orderEntry type="library" name="jquery-ui" level="application" />
   </component>
 </module>

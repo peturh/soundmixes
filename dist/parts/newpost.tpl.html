@@ -15,15 +15,11 @@
     ng-file-change="fileSelected($files, $event)"
     ng-multiple="false"
     ng-capture="'other'"
-    accept=".mp3,.mp4,.wav,.flac">
-        Choose mix <i class="fa fa-file-audio-o"></i>
-    </button>
+    accept=".mp3,.mp4,.wav,.flac">Choose mix</button>
     </div>
     <div class="form" ng-show="file">
         <div class="file-info"><b>Name:</b> {{file[0].name}}</div>
         <div class="file-info"><b>Size:</b> {{file[0].size/1000000}} MB</div>
     </div>
-    <button ng-click="publishPost()" class="form button">
-        {{getPercentage()}} <i class="fa fa-upload"></i>
-    </button>
+    <button ng-click="publishPost()" class="form button">Submit</button>
 </form>

@@ -14,6 +14,18 @@ app.service('QueryService',['$http','$upload', function($http,$upload){
             });
     };
 
+    QueryService.deletePost =function() {
+        return $http.get("/delete")
+            .success(function(data,status,headers,config){
+                return data;
+            }
+
+        ).error(function(data,status,headers,config){
+                console.log("Error",data);
+            });
+    };
+
+/*
     QueryService.uploadFile = function(file,post){
         console.log(post);
         return $upload.upload({
@@ -25,8 +37,9 @@ app.service('QueryService',['$http','$upload', function($http,$upload){
             console.log('progress: ' + progressPercentage + '% ' + evt.config.file);
         }).success(function(data, status, headers, config) {
             console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+            console.log("this runs")
         });
-    };
+    };*/
 
     return QueryService;
 

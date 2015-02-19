@@ -1,4 +1,4 @@
-var app = angular.module('soundMixes', ['ngRoute','angularFileUpload','wavesurfer.angular'])
+var app = angular.module('soundMixes', ['ngRoute','angularFileUpload','cgBusy','infinite-scroll'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
@@ -10,3 +10,12 @@ var app = angular.module('soundMixes', ['ngRoute','angularFileUpload','wavesurfe
                 controller: 'PublishCtrl'
             });
     });
+
+app.filter('reverse', function() {
+    return function(items) {
+        return items.slice().reverse();
+    };
+}).config(function($sceProvider){
+    $sceProvider.enabled(false);
+
+});

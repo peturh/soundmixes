@@ -5,7 +5,7 @@ var app = express();
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var multiparty = require('connect-multiparty');
-var multipartyMiddleware = multiparty({uploadDir : "./src/music"});
+var multipartyMiddleware = multiparty({uploadDir : "./dist/music"});
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var password = "hej";
@@ -23,8 +23,8 @@ var postSchema = new Schema({
 
 var postModel = mongoose.model('post', postSchema);
 
-app.use(express.static(path.join(__dirname, '/src/')));
-app.listen('9099',"192.168.0.6",function(){console.log("App listening on port 9099");});
+app.use(express.static(path.join(__dirname, '/dist/')));
+app.listen('9099',function(){console.log("App listening on port 9099");});
 
 app.get('/posts', function(req,res){
     postModel.find({},null,function(err,data){
@@ -37,10 +37,6 @@ app.get('/posts', function(req,res){
             res.send(data);
         }
     }).exec();
-});
-
-app.get('/delete', jsonParser, function(req,res){
-
 });
 
 app.post('/post', jsonParser, function(req,res){
@@ -69,26 +65,21 @@ app.post('/uploadfile', multipartyMiddleware, function(req, res) {
     renameFile(newly,orignal);
 
     if(object.password !== password){
-        fs.unlink("./src/music/"+orignal+".mp3",function(err){
+        fs.unlink(orignal,function(err){
             if(err) throw err;
             console.log("Wrong password, file deleted.");
-            res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
-            res.end();
         })
     }
     else{
         console.log("Correct password, saving to DB.");
         saveToDb(req.body.myObj);
-        res.writeHead(200, "OK", {'Content-Type': 'text/html'});
-        res.end();
-
     }
 });
 
 var renameFile = function(newly,orignal){
     console.log("Renaming file...");
     console.log("Done!");
-    fs.rename(newly,"./src/music/"+orignal+".mp3",function(err){
+    fs.rename(newly,"./dist/music/"+orignal+".mp3",function(err){
         if(err) throw err;
     });
 };

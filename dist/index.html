@@ -1,0 +1,35 @@
+<html ng-app="soundMixes">
+    <head>
+        <link href='main.css' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    </head>
+    <body>
+
+    <div class="navbar" ng-controller="MainCtrl">
+        <a href="#newpost" ng-hide="isActive('/newpost')">New post</a>
+        <a ng-click="run()" href="#/" ng-hide="isActive('/')">Read posts</a>
+    </div>
+
+    <div class="container">
+        <h1>{{name}}</h1>
+    </div>
+    <div ng-view></div>
+
+    </body>
+    <!--Vendors -->
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <!--<script type="text/javascript" src="js/directives/wavesurfer-angular.js"></script>-->
+
+    
+    <script type="text/javascript" src="soundMixes.js"></script>
+    
+
+
+    <!-- My app -->
+    
+
+</html>
