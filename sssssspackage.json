@@ -1,5 +1,5 @@
 {
-  "name": "cedric-music",
+  "name": "soundMixes",
   "version": "0.0.0",
   "description": "",
   "main": "Gruntfile.js",
@@ -16,7 +16,9 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-recess": "~1.0.0",
     "grunt-targethtml" : "",
-    "express" :""
+    "express" :"",
+    "mongoose" :"",
+    "body-parser" : ""
   },
   "repository": {
     "type": "git",

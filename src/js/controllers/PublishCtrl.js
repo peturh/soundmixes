@@ -22,6 +22,7 @@ app.controller('PublishCtrl',['$scope','QueryService','$upload', function($scope
         });*/
 
         $upload.upload({
+
             url: 'uploadfile',
             data: {myObj: $scope.newPost},
             file: $scope.file
@@ -32,14 +33,14 @@ app.controller('PublishCtrl',['$scope','QueryService','$upload', function($scope
             console.log("data",data);
             console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
             window.alert("Upload successfull!");
-            $scope.newPost = {
+    /*        $scope.newPost = {
                 "fileName" : "",
                 "title" : "",
                 "description" : "",
                 "date" :"",
                 "password" : ""
             };
-            $scope.file = "";
+            $scope.file = "";*/
 
         }).error(function(data,status,headers,config){
             $scope.progressPercentage = 0;

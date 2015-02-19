@@ -21,8 +21,8 @@ app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService
     };
 
 
-    $scope.deletePost = function(){
-        QueryService.deletePost().then(function(data){
+    $scope.deletePost = function(post){
+        QueryService.deletePost(post).then(function(data){
             $scope.run();
             window.alert("Song deleted");
         });

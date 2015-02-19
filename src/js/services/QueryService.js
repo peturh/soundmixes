@@ -14,8 +14,8 @@ app.service('QueryService',['$http','$upload', function($http,$upload){
             });
     };
 
-    QueryService.deletePost =function() {
-        return $http.get("/delete")
+    QueryService.deletePost =function(theObject) {
+        return $http.post("/delete",theObject)
             .success(function(data,status,headers,config){
                 return data;
             }

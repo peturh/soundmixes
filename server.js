@@ -3,11 +3,12 @@ var path = require('path');
 var fs = require('fs');
 var app = express();
 var mongoose = require("mongoose");
+var formidable = require('formidable');
+var bodyparser = require('body-parser');
+var jsonParser = bodyparser.json();
 var Schema = mongoose.Schema;
-var multiparty = require('connect-multiparty');
-var multipartyMiddleware = multiparty({uploadDir : "./src/music"});
-var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
+var dir = "src";
+var uploadDir ="./"+dir+"/music";
 var password = "hej";
 
 mongoose.connect("mongodb://localhost:27017/cedricMusic");
@@ -39,50 +40,46 @@ app.get('/posts', function(req,res){
     }).exec();
 });
 
-app.get('/delete', jsonParser, function(req,res){
+app.post('/delete', jsonParser, function(req,res){
+
+    console.log("trying to delete");
+    console.log(req.body._id);
+    postModel.remove({_id : req.body._id}, function(err){
+        if(err){
+            throw err;
+        }
+        else{
+            res.setHeader('Content-Type', 'application/json');
+            res.send()
+        }
+    });
 
 });
 
-app.post('/post', jsonParser, function(req,res){
-    var password = req.body.password;
-    if(password == "hej"){
-        console.log(req.body);
-        var newPost = new postModel(req.body);
-        console.log(newPost);
-        newPost.save(function(err){
-            if (err) {
-                return err;
-            }
-            else {
-                console.log("Post saved");
-            }}
-        )
-    }
-});
+app.post('/uploadfile', function(req, res) {
 
-app.post('/uploadfile', multipartyMiddleware, function(req, res) {
-    var object = JSON.parse(req.body.myObj);
-    var newly = req.files.file.path;
-    var orignal = object.title;
-    console.log("the file orignal",orignal);
-    console.log("Retrieving file...");
-    renameFile(newly,orignal);
+    var form = new formidable.IncomingForm();
+    form.uploadDir = uploadDir;
+    form.parse(req, function(err, fields, files) {
+        var object = JSON.parse(fields.myObj);
+        var original = object.title;
+        var newly = files.file.path;
+        renameFile(newly,original);
 
-    if(object.password !== password){
-        fs.unlink("./src/music/"+orignal+".mp3",function(err){
-            if(err) throw err;
-            console.log("Wrong password, file deleted.");
-            res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
+        if(object.password !== password){
+            fs.unlink("./src/music/"+original+".mp3",function(err) {
+                if (err) throw err;
+                console.log("Wrong password, file deleted.");
+                res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
+                res.end();
+            })
+        }
+        else{
+            saveToDb(fields.myObj);
+            res.writeHead(200, "OK", {'Content-Type': 'text/html'});
             res.end();
-        })
-    }
-    else{
-        console.log("Correct password, saving to DB.");
-        saveToDb(req.body.myObj);
-        res.writeHead(200, "OK", {'Content-Type': 'text/html'});
-        res.end();
-
-    }
+         }
+    });
 });
 
 var renameFile = function(newly,orignal){
@@ -108,4 +105,5 @@ var saveToDb = function(object){
         }
     )
 };
+
 
