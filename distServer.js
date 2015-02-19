@@ -17,14 +17,14 @@ var postSchema = new Schema({
     title : String,
     description : String,
     date: {type : Date,
-          default: Date.now
+        default: Date.now
     }
 });
 
 var postModel = mongoose.model('post', postSchema);
 
 app.use(express.static(path.join(__dirname, '/dist/')));
-app.listen('9099',function(){console.log("App listening on port 9099");});
+app.listen('9099',"192.168.0.6",function(){console.log("App listening on port 9099");});
 
 app.get('/posts', function(req,res){
     postModel.find({},null,function(err,data){
@@ -39,6 +39,10 @@ app.get('/posts', function(req,res){
     }).exec();
 });
 
+app.get('/delete', jsonParser, function(req,res){
+
+});
+
 app.post('/post', jsonParser, function(req,res){
     var password = req.body.password;
     if(password == "hej"){
@@ -46,12 +50,12 @@ app.post('/post', jsonParser, function(req,res){
         var newPost = new postModel(req.body);
         console.log(newPost);
         newPost.save(function(err){
-            if (err) {
-                return err;
-            }
-            else {
-                console.log("Post saved");
-            }}
+                if (err) {
+                    return err;
+                }
+                else {
+                    console.log("Post saved");
+                }}
         )
     }
 });
@@ -65,14 +69,19 @@ app.post('/uploadfile', multipartyMiddleware, function(req, res) {
     renameFile(newly,orignal);
 
     if(object.password !== password){
-        fs.unlink(orignal,function(err){
+        fs.unlink("./dist/music/"+orignal+".mp3",function(err){
             if(err) throw err;
             console.log("Wrong password, file deleted.");
+            res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
+            res.end();
         })
     }
     else{
         console.log("Correct password, saving to DB.");
         saveToDb(req.body.myObj);
+        res.writeHead(200, "OK", {'Content-Type': 'text/html'});
+        res.end();
+
     }
 });
 
