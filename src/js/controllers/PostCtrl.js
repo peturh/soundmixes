@@ -6,7 +6,6 @@ app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService
 
 
     $scope.loadMore = function() {
-        console.log("loaded more");
         $scope.limit = $scope.limit+1;
     };
 
@@ -21,10 +20,18 @@ app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService
     };
 
 
-    $scope.deletePost = function(post){
-        QueryService.deletePost(post).then(function(data){
+    $scope.deletePost = function(post,password){
+        theRequest = {
+            "password" : password,
+            "_id" : post._id
+        };
+
+        QueryService.deletePost(theRequest).then(function(data){
             $scope.run();
-            window.alert("Song deleted");
+            window.alert("Song successfully deleted");
+            console.log(data);
+        },function(err){
+            window.alert("You are doing something you shouldn't aren't you?");
         });
     };
 }]);

@@ -24,7 +24,7 @@ var postSchema = new Schema({
 
 var postModel = mongoose.model('post', postSchema);
 
-app.use(express.static(path.join(__dirname, '/src/')));
+app.use(express.static(path.join(__dirname, '/'+dir+'/')));
 app.listen('9099',"192.168.0.6",function(){console.log("App listening on port 9099");});
 
 app.get('/posts', function(req,res){
@@ -43,17 +43,21 @@ app.get('/posts', function(req,res){
 app.post('/delete', jsonParser, function(req,res){
 
     console.log("trying to delete");
-    console.log(req.body._id);
-    postModel.remove({_id : req.body._id}, function(err){
-        if(err){
-            throw err;
-        }
-        else{
-            res.setHeader('Content-Type', 'application/json');
-            res.send()
-        }
-    });
-
+    if(req.body.password === password){
+        postModel.remove({_id : req.body._id}, function(err){
+            if(err){
+                throw err;
+            }
+            else{
+                res.setHeader('Content-Type', 'application/json');
+                res.send()
+            }
+        });
+    }
+    else {
+        res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
+        res.end();
+    }
 });
 
 app.post('/uploadfile', function(req, res) {
@@ -67,7 +71,7 @@ app.post('/uploadfile', function(req, res) {
         renameFile(newly,original);
 
         if(object.password !== password){
-            fs.unlink("./src/music/"+original+".mp3",function(err) {
+            fs.unlink("./"+dir+"/music/"+original+".mp3",function(err) {
                 if (err) throw err;
                 console.log("Wrong password, file deleted.");
                 res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
@@ -85,7 +89,7 @@ app.post('/uploadfile', function(req, res) {
 var renameFile = function(newly,orignal){
     console.log("Renaming file...");
     console.log("Done!");
-    fs.rename(newly,"./src/music/"+orignal+".mp3",function(err){
+    fs.rename(newly,"./"+dir+"/music/"+orignal+".mp3",function(err){
         if(err) throw err;
     });
 };

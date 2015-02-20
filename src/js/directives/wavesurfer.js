@@ -18,7 +18,6 @@ app.directive('waveSurfer', [function(){
             scope.wavesurfer.load(song);
 
            scope.wavesurfer.on('ready', function () {
-                console.log("wavesurfer ready");
                 scope.start();
             });
 

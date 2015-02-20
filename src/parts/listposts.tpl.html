@@ -26,7 +26,7 @@
                             <a><i class="fa fa-volume-down"></i></a>
                         </button>
 
-                        <span>{{getVolume()}}%</span>
+                        <span ng-show="started">{{getVolume()}}%</span>
 
 
                          <button class="media-button" ng-click="volumeUp()" ng-show="started">
@@ -45,10 +45,17 @@
                             </button>
 
 
-                        <button class="media-button remove" ng-click="deletePost(post)">
+                        <button class="media-button remove" ng-click="showDeletePass=!showDeletePass" ng-hide="showDeletePass">
                             <i class="fa fa-remove"></i>
                         </button>
-
+                        <span class="remover" ng-hide="!showDeletePass">
+                            <input ng-model="deletePass" type="password" class="password-delete" placeholder="Password..." >
+                                <button  class="media-button confirm-remove" ng-click="deletePost(post,deletePass)">
+                                    Confirm
+                                </button>
+                            <button class="media-button undo" ng-click="showDeletePass=!showDeletePass"><i class="fa fa-undo"></i>
+                            </button>
+                        </span>
                     </div>
                 </div>
 

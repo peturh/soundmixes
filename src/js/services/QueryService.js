@@ -19,9 +19,8 @@ app.service('QueryService',['$http','$upload', function($http,$upload){
             .success(function(data,status,headers,config){
                 return data;
             }
-
         ).error(function(data,status,headers,config){
-                console.log("Error",data);
+                return data;
             });
     };
 

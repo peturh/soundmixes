@@ -9,7 +9,6 @@ app.controller('WaveSurferController', ['$scope', function ($scope) {
 
 
     $scope.start = function(){
-        console.log("starting");
         $scope.$apply(function(){
                 $scope.started = true;
             }
@@ -17,7 +16,6 @@ app.controller('WaveSurferController', ['$scope', function ($scope) {
     };
 
     $scope.playSong = function(){
-        console.log($scope.wavesurfer);
         $scope.wavesurfer.play();
         $scope.playing = true;
     };

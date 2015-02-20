@@ -1,13 +1,13 @@
-<form>
+<form name="submitform" novalidate class="formen">
     <span class="form">Add new track</span>
     <div>
-        <input ng-model="newPost.title" class="form input" placeholder="Track title...">
+        <input ng-model="newPost.title" class="form input" placeholder="Track title..." required>
     </div>
     <div>
-        <textarea ng-model="newPost.description" class="form textarea" placeholder="Description..."></textarea>
+        <textarea ng-model="newPost.description" class="form textarea" placeholder="Description..." required></textarea>
     </div>
     <div ng-click="publishPost">
-        <input type="password" ng-model="newPost.password" class="form input" placeholder="Password...">
+        <input type="password" ng-model="newPost.password" class="form input" placeholder="Password..." required>
     </div>
     <div>
     <button class="form button" type="file"
@@ -23,7 +23,7 @@
         <div class="file-info"><b>Name:</b> {{file[0].name}}</div>
         <div class="file-info"><b>Size:</b> {{file[0].size/1000000}} MB</div>
     </div>
-    <button ng-click="publishPost()" class="form button">
+    <button ng-disabled="submitform.$invalid" novalidate ng-click="publishPost()" class="form button">
         {{getPercentage()}} <i class="fa fa-upload"></i>
     </button>
 </form>

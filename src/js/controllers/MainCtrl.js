@@ -18,11 +18,4 @@ app.controller('MainCtrl',['$scope','$location', 'QueryService',
 
         $scope.posts = [];
 
-
-        $scope.run = function() {
-            QueryService.getPosts().then(function(data){
-                console.log(data);
-                $scope.posts = data.data;
-            });
-        };
     }]);

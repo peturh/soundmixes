@@ -3,11 +3,12 @@ var path = require('path');
 var fs = require('fs');
 var app = express();
 var mongoose = require("mongoose");
+var formidable = require('formidable');
+var bodyparser = require('body-parser');
+var jsonParser = bodyparser.json();
 var Schema = mongoose.Schema;
-var multiparty = require('connect-multiparty');
-var multipartyMiddleware = multiparty({uploadDir : "./dist/music"});
-var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
+var dir = "dist";
+var uploadDir ="./"+dir+"/music";
 var password = "hej";
 
 mongoose.connect("mongodb://localhost:27017/cedricMusic");
@@ -23,8 +24,8 @@ var postSchema = new Schema({
 
 var postModel = mongoose.model('post', postSchema);
 
-app.use(express.static(path.join(__dirname, '/dist/')));
-app.listen('9099',"192.168.0.6",function(){console.log("App listening on port 9099");});
+app.use(express.static(path.join(__dirname, '/'+dir+'/')));
+app.listen('9099',"0.0.0.0",function(){console.log("App listening on port 9099");});
 
 app.get('/posts', function(req,res){
     postModel.find({},null,function(err,data){
@@ -39,56 +40,56 @@ app.get('/posts', function(req,res){
     }).exec();
 });
 
-app.get('/delete', jsonParser, function(req,res){
+app.post('/delete', jsonParser, function(req,res){
 
-});
-
-app.post('/post', jsonParser, function(req,res){
-    var password = req.body.password;
-    if(password == "hej"){
-        console.log(req.body);
-        var newPost = new postModel(req.body);
-        console.log(newPost);
-        newPost.save(function(err){
-                if (err) {
-                    return err;
-                }
-                else {
-                    console.log("Post saved");
-                }}
-        )
+    console.log("trying to delete");
+    if(req.body.password === password){
+        postModel.remove({_id : req.body._id}, function(err){
+            if(err){
+                throw err;
+            }
+            else{
+                res.setHeader('Content-Type', 'application/json');
+                res.send()
+            }
+        });
     }
-});
-
-app.post('/uploadfile', multipartyMiddleware, function(req, res) {
-    var object = JSON.parse(req.body.myObj);
-    var newly = req.files.file.path;
-    var orignal = object.title;
-    console.log("the file orignal",orignal);
-    console.log("Retrieving file...");
-    renameFile(newly,orignal);
-
-    if(object.password !== password){
-        fs.unlink("./dist/music/"+orignal+".mp3",function(err){
-            if(err) throw err;
-            console.log("Wrong password, file deleted.");
-            res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
-            res.end();
-        })
-    }
-    else{
-        console.log("Correct password, saving to DB.");
-        saveToDb(req.body.myObj);
-        res.writeHead(200, "OK", {'Content-Type': 'text/html'});
+    else {
+        res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
         res.end();
-
     }
+});
+
+app.post('/uploadfile', function(req, res) {
+
+    var form = new formidable.IncomingForm();
+    form.uploadDir = uploadDir;
+    form.parse(req, function(err, fields, files) {
+        var object = JSON.parse(fields.myObj);
+        var original = object.title;
+        var newly = files.file.path;
+        renameFile(newly,original);
+
+        if(object.password !== password){
+            fs.unlink("./"+dir+"/music/"+original+".mp3",function(err) {
+                if (err) throw err;
+                console.log("Wrong password, file deleted.");
+                res.writeHead(405, "Failure", {'Content-Type': 'text/html'});
+                res.end();
+            })
+        }
+        else{
+            saveToDb(fields.myObj);
+            res.writeHead(200, "OK", {'Content-Type': 'text/html'});
+            res.end();
+        }
+    });
 });
 
 var renameFile = function(newly,orignal){
     console.log("Renaming file...");
     console.log("Done!");
-    fs.rename(newly,"./dist/music/"+orignal+".mp3",function(err){
+    fs.rename(newly,"./"+dir+"/music/"+orignal+".mp3",function(err){
         if(err) throw err;
     });
 };
@@ -108,4 +109,5 @@ var saveToDb = function(object){
         }
     )
 };
+
 

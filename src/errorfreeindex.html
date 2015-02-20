@@ -7,16 +7,14 @@
     <body>
 
     <div class="navbar" ng-controller="MainCtrl">
-        <a href="#newpost" ng-hide="isActive('/newpost')">New post</a>
-        <a ng-click="run()" href="#/" ng-hide="isActive('/')">Read posts</a>
+        <a href="#newpost" ng-hide="isActive('/newpost')"><button class="nav-button"><i class="fa fa-plus"></i></button></a>
+        <a ng-click="run()" href="#/" ng-hide="isActive('/')"><button class="nav-button"><i class="fa fa-align-left"></i></button></a>
     </div>
 
     <div class="container">
         <h2>Sound Mixes <i class="fa fa-music"></i></h2>
-
+        <div ng-view></div>
     </div>
-    <div ng-view></div>
-
     </body>
 
     <!--Vendors -->
