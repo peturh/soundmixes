@@ -1,3 +1,4 @@
+var app = require('app')
 app.service('QueryService',['$http','$upload', function($http,$upload){
 
     var QueryService = {};

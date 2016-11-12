@@ -1,3 +1,5 @@
+
+var app = require('app');
 app.controller('WaveSurferController', ['$scope', function ($scope) {
 
     var volume = 1;

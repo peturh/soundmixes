@@ -1,13 +1,18 @@
 /**
  * Created by petur on 2015-02-18.
  */
-app.controller('MainCtrl',['$scope','$location', 'QueryService',
-    function($scope, $location, QueryService){
+var app = require('app')
+app.controller('MainCtrl',['$scope','$location', 'QueryService','$state',
+    function($scope, $location, QueryService,$state){
 
         $scope.name = "Sound mixes";
 
         $scope.isActive = function(viewLocation){
             return viewLocation == $location.path();
+        };
+
+        $scope.newPost = function(){
+              $state.go('newpost');
         };
 
         $scope.publishPost = function(){

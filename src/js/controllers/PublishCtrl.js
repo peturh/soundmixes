@@ -1,3 +1,4 @@
+var app = require('app')
 app.controller('PublishCtrl',['$scope','QueryService','$upload', function($scope, QueryService,$upload){
 
     $scope.pushed = false;

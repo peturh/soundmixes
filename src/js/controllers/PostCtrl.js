@@ -1,3 +1,5 @@
+var app = require('app');
+var moment = require('moment');
 app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService){
 
     $scope.posts = [];
@@ -21,7 +23,7 @@ app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService
 
 
     $scope.deletePost = function(post,password){
-        theRequest = {
+        var theRequest = {
             "password" : password,
             "_id" : post._id
         };

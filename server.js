@@ -10,6 +10,8 @@ var Schema = mongoose.Schema;
 var dir = "src";
 var uploadDir ="./"+dir+"/music";
 var password = "hej";
+var serveStatic = require('serve-static');
+app.use(serveStatic(__dirname + "/dist"));
 
 mongoose.connect("mongodb://localhost:27017/cedricMusic");
 
@@ -25,7 +27,7 @@ var postSchema = new Schema({
 var postModel = mongoose.model('post', postSchema);
 
 app.use(express.static(path.join(__dirname, '/'+dir+'/')));
-app.listen('9099',"0.0.0.0",function(){console.log("App listening on port 9099");});
+app.listen('9090',"0.0.0.0",function(){console.log("App listening on port 9090");});
 
 app.get('/posts', function(req,res){
     postModel.find({},null,function(err,data){

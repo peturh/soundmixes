@@ -25,12 +25,26 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
     <!--<script type="text/javascript" src="js/directives/wavesurfer-angular.js"></script>-->
 
-    
+    <!--(if target dist)><!-->
     <script type="text/javascript" src="soundMixes.min.js"></script>
-    
+    <!--<!(endif)-->
 
 
     <!-- My app -->
-    
+    <!--(if target dev)><!-->
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/controllers/PostCtrl.js"></script>
+    <script type="text/javascript" src="js/controllers/PublishCtrl.js"></script>
+    <script type="text/javascript" src="js/controllers/MainCtrl.js"></script>
+    <script type="text/javascript" src="js/controllers/WaveSurferController.js"></script>
+    <script type="text/javascript" src="js/vendors/cg-busy.js"></script>
+    <script type="text/javascript" src="js/vendors/wavesurfer.min.js"></script>
+    <script type="text/javascript" src="js/vendors/infinite-scroll.js"></script>
+
+    <script type="text/javascript" src="js/services/QueryService.js"></script>
+    <script type="text/javascript" src="js/directives/angular-upload.js"></script>
+    <script type="text/javascript" src="js/directives/wavesurfer.js"></script>
+
+    <!--<!(endif)-->
 
 </html>
