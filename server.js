@@ -25,7 +25,7 @@ var postSchema = new Schema({
 var postModel = mongoose.model('post', postSchema);
 
 app.use(express.static(path.join(__dirname, '/'+dir+'/')));
-app.listen('9099',"192.168.0.6",function(){console.log("App listening on port 9099");});
+app.listen('9099',"0.0.0.0",function(){console.log("App listening on port 9099");});
 
 app.get('/posts', function(req,res){
     postModel.find({},null,function(err,data){
@@ -61,7 +61,7 @@ app.post('/delete', jsonParser, function(req,res){
 });
 
 app.post('/uploadfile', function(req, res) {
-
+    console.log("THIS")
     var form = new formidable.IncomingForm();
     form.uploadDir = uploadDir;
     form.parse(req, function(err, fields, files) {

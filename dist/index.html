@@ -7,25 +7,26 @@
     <body>
 
     <div class="navbar" ng-controller="MainCtrl">
-        <a href="#newpost" ng-hide="isActive('/newpost')">New post</a>
-        <a ng-click="run()" href="#/" ng-hide="isActive('/')">Read posts</a>
+        <a href="#newpost" ng-hide="isActive('/newpost')"><button class="nav-button"><i class="fa fa-plus"></i></button></a>
+        <a ng-click="run()" href="#/" ng-hide="isActive('/')"><button class="nav-button"><i class="fa fa-align-left"></i></button></a>
     </div>
 
     <div class="container">
-        <h1>{{name}}</h1>
+        <h2>Sound Mixes <i class="fa fa-music"></i></h2>
+        <div ng-view></div>
     </div>
-    <div ng-view></div>
-
     </body>
+
     <!--Vendors -->
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
     <!--<script type="text/javascript" src="js/directives/wavesurfer-angular.js"></script>-->
 
     
-    <script type="text/javascript" src="soundMixes.js"></script>
+    <script type="text/javascript" src="soundMixes.min.js"></script>
     
 
 

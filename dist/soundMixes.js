@@ -1,4 +1,4 @@
-var app = angular.module('soundMixes', ['ngRoute','angularFileUpload'])
+var app = angular.module('soundMixes', ['ngRoute','angularFileUpload','cgBusy','infinite-scroll'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
@@ -10,6 +10,15 @@ var app = angular.module('soundMixes', ['ngRoute','angularFileUpload'])
                 controller: 'PublishCtrl'
             });
     });
+
+app.filter('reverse', function() {
+    return function(items) {
+        return items.slice().reverse();
+    };
+}).config(function($sceProvider){
+    $sceProvider.enabled(false);
+
+});
 ;/**
  * Created by petur on 2015-02-18.
  */
@@ -30,30 +39,15 @@ app.controller('MainCtrl',['$scope','$location', 'QueryService',
 
         $scope.posts = [];
 
-
-        $scope.run = function() {
-            QueryService.getPosts().then(function(data){
-                console.log(data);
-                $scope.posts = data.data;
-            });
-        };
     }]);;app.controller('PostCtrl',['$scope','QueryService', function($scope,QueryService){
 
     $scope.posts = [];
 
+    $scope.limit = 3;
 
-    $scope.getDate = function(date){
-        return moment().format("MM/DD/YY",date);
-    };
 
-    $scope.options = {
-        waveColor      : '#c5c1be',
-        progressColor  : '#2A9FD6',
-        normalize      : true,
-        hideScrollbar  : true,
-        skipLength     : 15,
-        height         : 53,
-        cursorColor    : '#2A9FD6'
+    $scope.loadMore = function() {
+        $scope.limit = $scope.limit+1;
     };
 
     $scope.run = function() {
@@ -61,11 +55,32 @@ app.controller('MainCtrl',['$scope','$location', 'QueryService',
             $scope.posts = data.data;
         });
     };
+
+    $scope.getDate = function(date){
+        return moment().format("MM/DD/YY",date);
+    };
+
+
+    $scope.deletePost = function(post,password){
+        theRequest = {
+            "password" : password,
+            "_id" : post._id
+        };
+
+        QueryService.deletePost(theRequest).then(function(data){
+            $scope.run();
+            window.alert("Song successfully deleted");
+            console.log(data);
+        },function(err){
+            window.alert("You are doing something you shouldn't aren't you?");
+        });
+    };
 }]);
 ;app.controller('PublishCtrl',['$scope','QueryService','$upload', function($scope, QueryService,$upload){
 
+    var theServerIp = "http://192.168.0.6:9099";
     $scope.pushed = false;
-
+    $scope.progressPercentage = 0;
     $scope.newPost = {
         "fileName" : "",
         "title" : "",
@@ -77,11 +92,55 @@ app.controller('MainCtrl',['$scope','$location', 'QueryService',
     $scope.mySong = "";
 
     $scope.publishPost = function() {
-        $scope.newPost.fileName = "http://localhost:9099/music/"+$scope.newPost.title+".mp3";
-        $scope.pushed =! $scope.pushed;
-        QueryService.uploadFile($scope.file,$scope.newPost);
+        console.log("file",$scope.file);
+        if(typeof $scope.file !== "undefined"){
+            $scope.newPost.fileName = theServerIp+"/music/"+$scope.newPost.title+".mp3";
+            $scope.pushed =! $scope.pushed;
+         /*   QueryService.uploadFile($scope.file,$scope.newPost).then(function(data){
+                console.log(data);
+            });*/
+
+            $upload.upload({
+
+                url: 'uploadfile',
+                data: {myObj: $scope.newPost},
+                file: $scope.file
+            }).progress(function(evt) {
+                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            }).success(function(data, status, headers, config) {
+                $scope.progressPercentage = 0;
+
+                window.alert("Upload successfull!");
+                $scope.newPost = {
+                    "fileName" : "",
+                    "title" : "",
+                    "description" : "",
+                    "date" :"",
+                    "password" : ""
+                };
+                $scope.file = "";
+
+            }).error(function(data,status,headers,config){
+                $scope.progressPercentage = 0;
+                window.alert("Wrong password or the server fucked up, whad'ya know?");
+            });
+        }
+        else{
+            window.alert("No file selected!");
+        }
     };
 
+
+
+
+    $scope.getPercentage = function() {
+        if ($scope.progressPercentage === 0) {
+            return "Submit";
+        }
+        else{
+            return $scope.progressPercentage + "%";
+        }
+    };
 }]);
 ;app.controller('WaveSurferController', ['$scope', function ($scope) {
 
@@ -92,8 +151,8 @@ app.controller('MainCtrl',['$scope','$location', 'QueryService',
     $scope.playing = false;
     $scope.started = false;
 
+
     $scope.start = function(){
-        console.log("starting");
         $scope.$apply(function(){
                 $scope.started = true;
             }
@@ -101,7 +160,6 @@ app.controller('MainCtrl',['$scope','$location', 'QueryService',
     };
 
     $scope.playSong = function(){
-        console.log($scope.wavesurfer);
         $scope.wavesurfer.play();
         $scope.playing = true;
     };
@@ -1058,7 +1116,6 @@ app.directive('waveSurfer', [function(){
             scope.wavesurfer.load(song);
 
            scope.wavesurfer.on('ready', function () {
-                console.log("wavesurfer ready");
                 scope.start();
             });
 
@@ -1081,6 +1138,17 @@ app.directive('waveSurfer', [function(){
             });
     };
 
+    QueryService.deletePost =function(theObject) {
+        return $http.post("/delete",theObject)
+            .success(function(data,status,headers,config){
+                return data;
+            }
+        ).error(function(data,status,headers,config){
+                return data;
+            });
+    };
+
+/*
     QueryService.uploadFile = function(file,post){
         console.log(post);
         return $upload.upload({
@@ -1092,12 +1160,73 @@ app.directive('waveSurfer', [function(){
             console.log('progress: ' + progressPercentage + '% ' + evt.config.file);
         }).success(function(data, status, headers, config) {
             console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+            console.log("this runs")
         });
-    };
+    };*/
 
     return QueryService;
 
-}]);;//! moment.js
+}]);;angular.module("cgBusy",[]),angular.module("cgBusy").factory("_cgBusyTrackerFactory",["$timeout","$q",function(a,b){return function(){var c={};c.promises=[],c.delayPromise=null,c.durationPromise=null,c.delayJustFinished=!1,c.reset=function(b){c.minDuration=b.minDuration,c.promises=[],angular.forEach(b.promises,function(a){a&&!a.$cgBusyFulfilled&&d(a)}),0!==c.promises.length&&(c.delayJustFinished=!1,b.delay&&(c.delayPromise=a(function(){c.delayPromise=null,c.delayJustFinished=!0},parseInt(b.delay,10))),b.minDuration&&(c.durationPromise=a(function(){c.durationPromise=null},parseInt(b.minDuration,10)+(b.delay?parseInt(b.delay,10):0))))},c.isPromise=function(a){var b=a&&(a.then||a.$then||a.$promise&&a.$promise.then);return"undefined"!=typeof b},c.callThen=function(a,c,d){var e;a.then||a.$then?e=a:a.$promise?e=a.$promise:a.denodeify&&(e=b.when(a));var f=e.then||e.$then;f.call(e,c,d)};var d=function(a){if(!c.isPromise(a))throw new Error("cgBusy expects a promise (or something that has a .promise or .$promise");-1===c.promises.indexOf(a)&&(c.promises.push(a),c.callThen(a,function(){a.$cgBusyFulfilled=!0,-1!==c.promises.indexOf(a)&&c.promises.splice(c.promises.indexOf(a),1)},function(){a.$cgBusyFulfilled=!0,-1!==c.promises.indexOf(a)&&c.promises.splice(c.promises.indexOf(a),1)}))};return c.active=function(){return c.delayPromise?!1:c.delayJustFinished?(c.delayJustFinished=!1,c.promises.length>0):c.durationPromise?!0:c.promises.length>0},c}}]),angular.module("cgBusy").value("cgBusyDefaults",{}),angular.module("cgBusy").directive("cgBusy",["$compile","$templateCache","cgBusyDefaults","$http","_cgBusyTrackerFactory",function(a,b,c,d,e){return{restrict:"A",link:function(f,g,h){var i=g.css("position");("static"===i||""===i||"undefined"==typeof i)&&g.css("position","relative");var j,k,l,m,n,o=e(),p={templateUrl:"angular-busy.html",delay:0,minDuration:0,backdrop:!0,message:"Please Wait...",wrapperClass:"cg-busy cg-busy-animation"};angular.extend(p,c),f.$watchCollection(h.cgBusy,function(c){if(c||(c={promise:null}),angular.isString(c))throw new Error("Invalid value for cg-busy. cgBusy no longer accepts string ids to represent promises/trackers.");(angular.isArray(c)||o.isPromise(c))&&(c={promise:c}),c=angular.extend(angular.copy(p),c),c.templateUrl||(c.templateUrl=p.templateUrl),angular.isArray(c.promise)||(c.promise=[c.promise]),m||(m=f.$new()),m.$message=c.message,angular.equals(o.promises,c.promise)||o.reset({promises:c.promise,delay:c.delay,minDuration:c.minDuration}),m.$cgBusyIsActive=function(){return o.active()},j&&l===c.templateUrl&&n===c.backdrop||(j&&j.remove(),k&&k.remove(),l=c.templateUrl,n=c.backdrop,d.get(l,{cache:b}).success(function(b){if(c.backdrop="undefined"==typeof c.backdrop?!0:c.backdrop,c.backdrop){var d='<div class="cg-busy cg-busy-backdrop cg-busy-backdrop-animation ng-hide" ng-show="$cgBusyIsActive()"></div>';k=a(d)(m),g.append(k)}var e='<div class="'+c.wrapperClass+' ng-hide" ng-show="$cgBusyIsActive()">'+b+"</div>";j=a(e)(m),angular.element(j.children()[0]).css("position","absolute").css("top",0).css("left",0).css("right",0).css("bottom",0),g.append(j)}).error(function(a){throw new Error("Template specified for cgBusy ("+c.templateUrl+") could not be loaded. "+a)}))},!0)}}}]),angular.module("cgBusy").run(["$templateCache",function(a){"use strict";a.put("angular-busy.html",'<div class="cg-busy-default-wrapper">\r\n\r\n   <div class="cg-busy-default-sign">\r\n\r\n      <div class="cg-busy-default-spinner">\r\n         <div class="bar1"></div>\r\n         <div class="bar2"></div>\r\n         <div class="bar3"></div>\r\n         <div class="bar4"></div>\r\n         <div class="bar5"></div>\r\n         <div class="bar6"></div>\r\n         <div class="bar7"></div>\r\n         <div class="bar8"></div>\r\n         <div class="bar9"></div>\r\n         <div class="bar10"></div>\r\n         <div class="bar11"></div>\r\n         <div class="bar12"></div>\r\n      </div>\r\n\r\n      <div class="cg-busy-default-text">{{$message}}</div>\r\n\r\n   </div>\r\n\r\n</div>')}]);;/* ng-infinite-scroll - v1.0.0 - 2013-02-23 */
+var mod;
+
+mod = angular.module('infinite-scroll', []);
+
+mod.directive('infiniteScroll', [
+    '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
+        return {
+            link: function(scope, elem, attrs) {
+                var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
+                $window = angular.element($window);
+                scrollDistance = 0;
+                if (attrs.infiniteScrollDistance != null) {
+                    scope.$watch(attrs.infiniteScrollDistance, function(value) {
+                        return scrollDistance = parseInt(value, 10);
+                    });
+                }
+                scrollEnabled = true;
+                checkWhenEnabled = false;
+                if (attrs.infiniteScrollDisabled != null) {
+                    scope.$watch(attrs.infiniteScrollDisabled, function(value) {
+                        scrollEnabled = !value;
+                        if (scrollEnabled && checkWhenEnabled) {
+                            checkWhenEnabled = false;
+                            return handler();
+                        }
+                    });
+                }
+                handler = function() {
+                    var elementBottom, remaining, shouldScroll, windowBottom;
+                    windowBottom = $window.height() + $window.scrollTop();
+                    elementBottom = elem.offset().top + elem.height();
+                    remaining = elementBottom - windowBottom;
+                    shouldScroll = remaining <= $window.height() * scrollDistance;
+                    if (shouldScroll && scrollEnabled) {
+                        if ($rootScope.$$phase) {
+                            return scope.$eval(attrs.infiniteScroll);
+                        } else {
+                            return scope.$apply(attrs.infiniteScroll);
+                        }
+                    } else if (shouldScroll) {
+                        return checkWhenEnabled = true;
+                    }
+                };
+                $window.on('scroll', handler);
+                scope.$on('$destroy', function() {
+                    return $window.off('scroll', handler);
+                });
+                return $timeout((function() {
+                    if (attrs.infiniteScrollImmediateCheck) {
+                        if (scope.$eval(attrs.infiniteScrollImmediateCheck)) {
+                            return handler();
+                        }
+                    } else {
+                        return handler();
+                    }
+                }), 0);
+            }
+        };
+    }
+]);;//! moment.js
 //! version : 2.9.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT

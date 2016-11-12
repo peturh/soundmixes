@@ -1,6 +1,5 @@
 app.controller('PublishCtrl',['$scope','QueryService','$upload', function($scope, QueryService,$upload){
 
-    var theServerIp = "http://192.168.0.6:9099";
     $scope.pushed = false;
     $scope.progressPercentage = 0;
     $scope.newPost = {
@@ -16,7 +15,7 @@ app.controller('PublishCtrl',['$scope','QueryService','$upload', function($scope
     $scope.publishPost = function() {
         console.log("file",$scope.file);
         if(typeof $scope.file !== "undefined"){
-            $scope.newPost.fileName = theServerIp+"/music/"+$scope.newPost.title+".mp3";
+            $scope.newPost.fileName = "/music/"+$scope.newPost.title+".mp3";
             $scope.pushed =! $scope.pushed;
          /*   QueryService.uploadFile($scope.file,$scope.newPost).then(function(data){
                 console.log(data);
